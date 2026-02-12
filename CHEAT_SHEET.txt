@@ -1,0 +1,246 @@
+================================================================================
+PROJFORGE CHEAT SHEET - Project Scaffolding & Template Engine v1.0.0
+================================================================================
+
+QUICK START
+-----------
+1. Clone:   git clone https://github.com/DonkRonk17/ProjForge.git
+2. List:    python projforge.py list
+3. Create:  python projforge.py create python-cli MyTool --var "description=Tool"
+4. Test:    cd MyTool && python test_my_tool.py
+
+================================================================================
+COMMANDS
+--------------------------------------------------------------------------------
+
+CREATE A PROJECT:
+  python projforge.py create <template> <name> [options]
+  
+  Examples:
+    projforge create python-cli MyCLI --var "description=My CLI tool"
+    projforge create python-lib MyLib --var "description=My library"
+    projforge create teambrain-standard MyTool --var "description=Pro tool"
+    projforge create python-cli MyTool --interactive
+    projforge create python-cli MyTool --var "description=Test" --dry-run
+    projforge create python-cli MyTool --var "description=Git" --git
+
+LIST TEMPLATES:
+  python projforge.py list
+  python projforge.py list --verbose
+
+PREVIEW TEMPLATE:
+  python projforge.py preview python-cli
+  python projforge.py preview teambrain-standard
+
+TEMPLATE INFO:
+  python projforge.py info python-cli
+  python projforge.py info teambrain-standard
+
+ADD CUSTOM TEMPLATE:
+  python projforge.py template add /path/to/my-template
+
+================================================================================
+CLI FLAGS & OPTIONS
+--------------------------------------------------------------------------------
+
+Create Options:
+  --var KEY=VALUE      Set template variable (repeatable)
+  --output DIR, -o     Output directory (default: current)
+  --interactive, -i    Prompt for missing variables
+  --git                Initialize git repository
+  --dry-run            Preview without creating files
+
+List Options:
+  --verbose, -v        Show variable details
+
+Global Options:
+  --version            Show version
+  --help, -h           Show help
+
+================================================================================
+BUILT-IN TEMPLATES
+--------------------------------------------------------------------------------
+
+python-cli (7 files):
+  Main script + argparse CLI + class interface
+  Test suite (4 tests) + README + setup.py + LICENSE + .gitignore
+  Best for: CLI tools, scripts, automation
+
+python-lib (9 files):
+  Package structure: pkg/__init__.py + core.py
+  Tests directory + README + setup.py + LICENSE + .gitignore
+  Best for: Libraries, shared modules, pip packages
+
+teambrain-standard (17 files):
+  Everything in python-cli PLUS:
+  EXAMPLES.md, CHEAT_SHEET.txt, BUILD_COVERAGE_PLAN.md
+  BUILD_AUDIT.md, ARCHITECTURE.md, BUILD_REPORT.md
+  INTEGRATION_PLAN.md, QUICK_START_GUIDES.md
+  INTEGRATION_EXAMPLES.md, branding/BRANDING_PROMPTS.md
+  Best for: Team Brain tools, Holy Grail Protocol projects
+
+================================================================================
+TEMPLATE VARIABLES
+--------------------------------------------------------------------------------
+
+Auto-Derived from Project Name:
+  {{name}}           Project name as provided (MyTool)
+  {{name_lower}}     snake_case (my_tool)
+  {{name_upper}}     UPPER_CASE (MYTOOL)
+  {{name_snake}}     snake_case (my_tool)
+  {{name_title}}     Title Case (My Tool)
+
+Auto-Generated:
+  {{date}}           Current date (2026-02-12)
+  {{year}}           Current year (2026)
+  {{month}}          Current month name (February)
+
+User-Settable (via --var):
+  {{description}}    Project description (REQUIRED)
+  {{author}}         Author name [default: Logan Smith]
+  {{org}}            Organization [default: Metaphy LLC]
+  {{builder}}        Builder agent [default: ATLAS]
+  {{requested_by}}   Requester [default: Self-initiated]
+
+================================================================================
+PYTHON API
+--------------------------------------------------------------------------------
+
+Import:
+  from projforge import ProjForge
+
+Create Project:
+  forge = ProjForge()
+  result = forge.create_project(
+      template_name="python-cli",
+      project_name="MyTool",
+      variables={"description": "My tool"},
+      output_dir=Path("./projects"),
+      dry_run=False,
+      init_git=True,
+  )
+  print(result.success, result.files_created)
+
+List Templates:
+  print(forge.list_templates(verbose=True))
+
+Preview:
+  print(forge.preview_template("python-cli"))
+
+Info:
+  info = forge.get_template_info("python-cli")
+  print(info.name, info.file_count)
+
+Add Custom:
+  success, msg = forge.add_template(Path("/path/to/template"))
+
+================================================================================
+CUSTOM TEMPLATES
+--------------------------------------------------------------------------------
+
+Structure:
+  my-template/
+    template.json       # Metadata + variables
+    files/              # Template files (any structure)
+      main.py
+      tests/
+        test_main.py
+      README.md
+
+template.json Format:
+  {
+    "name": "my-template",
+    "description": "My custom template",
+    "version": "1.0",
+    "variables": {
+      "name": {"description": "Project name", "required": true},
+      "description": {"description": "Description", "required": true}
+    }
+  }
+
+Register:
+  projforge template add /path/to/my-template
+
+Custom templates stored at: ~/.projforge/templates/
+
+================================================================================
+CONFIGURATION
+--------------------------------------------------------------------------------
+
+Config File: ~/.projforge/config.json
+
+Default Config:
+  {
+    "default_author": "Logan Smith",
+    "default_org": "Metaphy LLC",
+    "default_license": "MIT",
+    "default_template": "python-cli",
+    "auto_git": false
+  }
+
+================================================================================
+TROUBLESHOOTING
+--------------------------------------------------------------------------------
+
+"Directory already exists":
+  -> Choose different name or delete existing directory
+  -> Or use --output to specify different location
+
+"Template not found":
+  -> Run: projforge list
+  -> Template names are case-sensitive
+
+"Invalid project name":
+  -> Must start with letter
+  -> Only letters, numbers, hyphens, underscores
+  -> Cannot be Windows reserved (CON, PRN, NUL, etc.)
+  -> Max 100 characters
+
+Generated tests fail:
+  -> Check Python version >= 3.7
+  -> Verify write permissions to temp directory
+
+================================================================================
+INTEGRATION WITH TEAM BRAIN TOOLS
+--------------------------------------------------------------------------------
+
+With ToolRegistry:
+  from toolregistry import ToolRegistry
+  registry = ToolRegistry()
+  registry.register(result.project_path)
+
+With GitFlow:
+  projforge create python-cli MyTool --var "description=Tool" --git
+  cd MyTool && gitflow commit "Initial scaffold"
+
+With SynapseLink:
+  from synapselink import quick_send
+  quick_send("TEAM", "New Project", f"Created: {result.project_path}")
+
+With BatchRunner:
+  # Chain commands for batch project creation
+  batchrunner run scaffold_pipeline.json
+
+================================================================================
+RESOURCES
+--------------------------------------------------------------------------------
+
+Documentation:   README.md
+Examples:        EXAMPLES.md (12 examples)
+Integration:     INTEGRATION_PLAN.md
+Quick Starts:    QUICK_START_GUIDES.md
+GitHub:          https://github.com/DonkRonk17/ProjForge
+Issues:          https://github.com/DonkRonk17/ProjForge/issues
+Tests:           77 passing (100%)
+
+================================================================================
+CREDITS
+--------------------------------------------------------------------------------
+
+Built by: ATLAS (Team Brain)
+For: Logan Smith / Metaphy LLC
+Date: February 12, 2026
+License: MIT
+Dependencies: Zero (Python stdlib only)
+
+================================================================================

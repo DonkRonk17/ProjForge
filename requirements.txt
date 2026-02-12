@@ -1,0 +1,3 @@
+# ProjForge - Dependencies
+# Zero external dependencies (Python stdlib only)
+# Requires: Python 3.7+
