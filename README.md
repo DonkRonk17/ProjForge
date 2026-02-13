@@ -1,3 +1,6 @@
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/c132a5e6-c7cf-493b-b78f-a1ddba405f69" />
+
+
 # 🏗️ ProjForge
 
 > **Project Scaffolding & Template Engine** - Generate complete, ready-to-code project structures from built-in or custom templates in seconds.
@@ -642,6 +645,9 @@ python -c "import tempfile; print(tempfile.gettempdir())"
 ```
 
 ---
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/de3ec960-3b7f-4b43-8a43-186701ead5f9" />
+
 
 ## 🤝 Contributing
 
